@@ -18,6 +18,17 @@ class AuthProvider with ChangeNotifier {
   String? get token => _token;
   String? get userId => _userId;
 
+  /// 获取带 Authorization 的请求头
+  Map<String, String> getAuthHeaders() {
+    final headers = <String, String>{
+      'Content-Type': 'application/json',
+    };
+    if (_token != null && _token!.isNotEmpty) {
+      headers['Authorization'] = _token!;
+    }
+    return headers;
+  }
+
   /// 初始化 - 从本地存储读取登录状态
   Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
