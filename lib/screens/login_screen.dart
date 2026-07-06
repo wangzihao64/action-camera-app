@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
+import 'register_screen.dart';
 
 /// 现代化的登录界面 - iOS 风格
 class LoginScreen extends StatefulWidget {
@@ -329,7 +330,11 @@ class _LoginScreenState extends State<LoginScreen>
         CupertinoButton(
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
           onPressed: () {
-            _showAlert('提示', '注册功能开发中...');
+            Navigator.of(context).push(
+              CupertinoPageRoute(
+                builder: (context) => const RegisterScreen(),
+              ),
+            );
           },
           child: const Text(
             '立即注册',
