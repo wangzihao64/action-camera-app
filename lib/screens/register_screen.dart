@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 /// 注册页面 - iOS 风格
 class RegisterScreen extends StatefulWidget {
@@ -363,18 +365,31 @@ class _RegisterScreenState extends State<RegisterScreen>
 
     setState(() => _isLoadingCode = true);
 
-    // TODO: 调用真实的后端 API 发送验证码
-    await Future.delayed(const Duration(seconds: 1));
+    try {
+      // 调用后端 API 发送验证码
+      final response = await http.post(
+        Uri.parse('http://127.0.0.1:3000/api/v1/user/vaild-email'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email}),
+      );
 
-    setState(() {
-      _isLoadingCode = false;
-      _countdown = 60;
-    });
+      setState(() => _isLoadingCode = false);
 
-    _showAlert('提示', '验证码已发送到 $email\n测试验证码: 123456');
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
 
-    // 倒计时
-    _startCountdown();
+        // 开始倒计时
+        setState(() => _countdown = 60);
+        _startCountdown();
+
+        _showAlert('提示', '验证码已发送到 $email');
+      } else {
+        _showAlert('错误', '发送验证码失败，请重试');
+      }
+    } catch (e) {
+      setState(() => _isLoadingCode = false);
+      _showAlert('错误', '网络请求失败：$e');
+    }
   }
 
   void _startCountdown() {
