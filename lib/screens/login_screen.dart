@@ -13,10 +13,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
-  final _phoneController = TextEditingController();
-  final _codeController = TextEditingController();
-  bool _isLoadingCode = false;
-  int _countdown = 0;
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
 
@@ -35,8 +33,8 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   void dispose() {
-    _phoneController.dispose();
-    _codeController.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
     _animationController.dispose();
     super.dispose();
   }
@@ -181,10 +179,7 @@ class _LoginScreenState extends State<LoginScreen>
                     letterSpacing: -1,
                   ),
                 ),
-                TextSpan(
-                  text: ' ⚡️',
-                  style: TextStyle(fontSize: 40),
-                ),
+                TextSpan(text: ' ⚡️', style: TextStyle(fontSize: 40)),
               ],
             ),
           ),
@@ -220,25 +215,21 @@ class _LoginScreenState extends State<LoginScreen>
       ),
       child: Column(
         children: [
-          _buildPhoneInput(),
+          _buildUsernameInput(),
           const SizedBox(height: 16),
-          _buildCodeInput(),
+          _buildPasswordInput(),
         ],
       ),
     );
   }
 
-  // 手机号输入框
-  Widget _buildPhoneInput() {
+  // 用户名输入框
+  Widget _buildUsernameInput() {
     return CupertinoTextField(
-      controller: _phoneController,
-      placeholder: '手机号',
-      keyboardType: TextInputType.phone,
-      maxLength: 11,
-      style: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-      ),
+      controller: _usernameController,
+      placeholder: '用户名',
+      keyboardType: TextInputType.text,
+      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: const Color(0xFFF8F9FA),
@@ -247,7 +238,7 @@ class _LoginScreenState extends State<LoginScreen>
       prefix: const Padding(
         padding: EdgeInsets.only(left: 16),
         child: Icon(
-          CupertinoIcons.phone_fill,
+          CupertinoIcons.person_fill,
           color: Color(0xFF6366F1),
           size: 20,
         ),
@@ -255,62 +246,27 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  // 验证码输入框
-  Widget _buildCodeInput() {
-    return Row(
-      children: [
-        Expanded(
-          child: CupertinoTextField(
-            controller: _codeController,
-            placeholder: '验证码',
-            keyboardType: TextInputType.number,
-            maxLength: 6,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF8F9FA),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            prefix: const Padding(
-              padding: EdgeInsets.only(left: 16),
-              child: Icon(
-                CupertinoIcons.lock_fill,
-                color: Color(0xFFA855F7),
-                size: 20,
-              ),
-            ),
-          ),
+  // 密码输入框
+  Widget _buildPasswordInput() {
+    return CupertinoTextField(
+      controller: _passwordController,
+      placeholder: '密码',
+      obscureText: true,
+      keyboardType: TextInputType.visiblePassword,
+      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8F9FA),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      prefix: const Padding(
+        padding: EdgeInsets.only(left: 16),
+        child: Icon(
+          CupertinoIcons.lock_fill,
+          color: Color(0xFFA855F7),
+          size: 20,
         ),
-        const SizedBox(width: 12),
-        CupertinoButton(
-          padding: EdgeInsets.zero,
-          onPressed: _countdown > 0 ? null : _getVerificationCode,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            decoration: BoxDecoration(
-              color: _countdown > 0
-                  ? const Color(0xFFF8F9FA)
-                  : const Color(0xFF6366F1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: _isLoadingCode
-                ? const CupertinoActivityIndicator(color: CupertinoColors.white)
-                : Text(
-                    _countdown > 0 ? '${_countdown}s' : '获取',
-                    style: TextStyle(
-                      color: _countdown > 0
-                          ? CupertinoColors.systemGrey
-                          : CupertinoColors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
@@ -353,9 +309,7 @@ class _LoginScreenState extends State<LoginScreen>
   Widget _buildDivider() {
     return Row(
       children: [
-        const Expanded(
-          child: Divider(color: Color(0xFFE5E7EB), thickness: 1),
-        ),
+        const Expanded(child: Divider(color: Color(0xFFE5E7EB), thickness: 1)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
@@ -367,9 +321,7 @@ class _LoginScreenState extends State<LoginScreen>
             ),
           ),
         ),
-        const Expanded(
-          child: Divider(color: Color(0xFFE5E7EB), thickness: 1),
-        ),
+        const Expanded(child: Divider(color: Color(0xFFE5E7EB), thickness: 1)),
       ],
     );
   }
@@ -385,10 +337,7 @@ class _LoginScreenState extends State<LoginScreen>
         decoration: BoxDecoration(
           color: CupertinoColors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: const Color(0xFFE5E7EB),
-            width: 1.5,
-          ),
+          border: Border.all(color: const Color(0xFFE5E7EB), width: 1.5),
         ),
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -413,64 +362,32 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  // 获取验证码
-  Future<void> _getVerificationCode() async {
-    final phone = _phoneController.text.trim();
-
-    if (phone.isEmpty || phone.length != 11) {
-      _showAlert('提示', '请输入正确的手机号');
-      return;
-    }
-
-    setState(() => _isLoadingCode = true);
-
-    // TODO: 调用真实的后端 API 发送验证码
-    await Future.delayed(const Duration(seconds: 1));
-
-    setState(() {
-      _isLoadingCode = false;
-      _countdown = 60;
-    });
-
-    _showAlert('提示', '验证码已发送到 $phone\n测试验证码: 123456');
-
-    // 倒计时
-    _startCountdown();
-  }
-
-  void _startCountdown() {
-    Future.delayed(const Duration(seconds: 1), () {
-      if (_countdown > 0) {
-        setState(() => _countdown--);
-        _startCountdown();
-      }
-    });
-  }
+  // （已改为用户名+密码，因此移除验证码逻辑）
 
   // 处理登录
   Future<void> _handleLogin() async {
-    final phone = _phoneController.text.trim();
-    final code = _codeController.text.trim();
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text.trim();
 
-    if (phone.isEmpty || phone.length != 11) {
-      _showAlert('提示', '请输入正确的手机号');
+    if (username.isEmpty) {
+      _showAlert('提示', '请输入用户名');
       return;
     }
 
-    if (code.isEmpty) {
-      _showAlert('提示', '请输入验证码');
+    if (password.isEmpty || password.length < 6) {
+      _showAlert('提示', '请输入正确的密码（至少6位）');
       return;
     }
 
     final authProvider = context.read<AuthProvider>();
-    final success = await authProvider.loginWithPhone(phone, code);
+    final success = await authProvider.loginWithUsername(username, password);
 
     if (success) {
       if (mounted) {
         _showAlert('成功', '登录成功！');
       }
     } else {
-      _showAlert('错误', '验证码错误，请重试');
+      _showAlert('错误', '用户名或密码错误，请重试');
     }
   }
 

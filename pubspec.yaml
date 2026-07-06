@@ -40,6 +40,8 @@ dependencies:
 
   # 本地存储
   shared_preferences: ^2.2.2
+  # HTTP 客户端
+  http: ^0.13.6
 
 dev_dependencies:
   flutter_test:
