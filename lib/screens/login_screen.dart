@@ -63,6 +63,8 @@ class _LoginScreenState extends State<LoginScreen>
                     _buildFormCard(),
                     const SizedBox(height: 24),
                     _buildLoginButton(),
+                    const SizedBox(height: 16),
+                    _buildSecondaryActions(),
                     const SizedBox(height: 32),
                     _buildDivider(),
                     const SizedBox(height: 32),
@@ -302,6 +304,43 @@ class _LoginScreenState extends State<LoginScreen>
           ),
         ),
       ),
+    );
+  }
+
+  // 构建次要操作按钮（忘记密码、立即注册）
+  Widget _buildSecondaryActions() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        CupertinoButton(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+          onPressed: () {
+            _showAlert('提示', '忘记密码功能开发中...');
+          },
+          child: Text(
+            '忘记密码？',
+            style: TextStyle(
+              fontSize: 14,
+              color: CupertinoColors.systemGrey.withOpacity(0.8),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        CupertinoButton(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+          onPressed: () {
+            _showAlert('提示', '注册功能开发中...');
+          },
+          child: const Text(
+            '立即注册',
+            style: TextStyle(
+              fontSize: 14,
+              color: Color(0xFF6366F1),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
