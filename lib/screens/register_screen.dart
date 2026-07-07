@@ -436,13 +436,22 @@ class _RegisterScreenState extends State<RegisterScreen>
 
         // 注册成功，返回登录页面
         if (mounted) {
-          _showAlert('成功', '注册成功！请登录');
-          // 延迟后返回登录页
-          Future.delayed(const Duration(seconds: 1), () {
-            if (mounted) {
-              Navigator.of(context).pop();
-            }
-          });
+          showCupertinoDialog(
+            context: context,
+            builder: (context) => CupertinoAlertDialog(
+              title: const Text('成功'),
+              content: const Text('注册成功！请登录'),
+              actions: [
+                CupertinoDialogAction(
+                  child: const Text('确定'),
+                  onPressed: () {
+                    Navigator.pop(context); // 关闭对话框
+                    Navigator.pop(context); // 返回登录页面
+                  },
+                ),
+              ],
+            ),
+          );
         }
       } else {
         _showAlert('错误', '注册失败，请重试');
