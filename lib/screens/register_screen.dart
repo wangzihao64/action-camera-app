@@ -321,9 +321,7 @@ class _RegisterScreenState extends State<RegisterScreen>
   Widget _buildRegisterButton() {
     return CupertinoButton(
       padding: EdgeInsets.zero,
-      onPressed: () {
-        _showAlert('提示', '注册功能开发中...');
-      },
+      onPressed: _handleRegister,
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 18),
@@ -388,6 +386,68 @@ class _RegisterScreenState extends State<RegisterScreen>
       }
     } catch (e) {
       setState(() => _isLoadingCode = false);
+      _showAlert('错误', '网络请求失败：$e');
+    }
+  }
+
+  // 处理注册
+  Future<void> _handleRegister() async {
+    final username = _usernameController.text.trim();
+    final email = _emailController.text.trim();
+    final code = _codeController.text.trim();
+    final password = _passwordController.text.trim();
+
+    // 表单验证
+    if (username.isEmpty) {
+      _showAlert('提示', '请输入用户名');
+      return;
+    }
+
+    if (email.isEmpty || !email.contains('@')) {
+      _showAlert('提示', '请输入正确的邮箱地址');
+      return;
+    }
+
+    if (code.isEmpty) {
+      _showAlert('提示', '请输入验证码');
+      return;
+    }
+
+    if (password.isEmpty || password.length < 6) {
+      _showAlert('提示', '密码至少需要6位');
+      return;
+    }
+
+    try {
+      // 调用后端注册 API
+      final response = await http.post(
+        Uri.parse('http://127.0.0.1:3000/api/v1/user/register'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'user_name': username,
+          'code': code,
+          'password': password,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        // 注册成功，返回登录页面
+        if (mounted) {
+          _showAlert('成功', '注册成功！请登录');
+          // 延迟后返回登录页
+          Future.delayed(const Duration(seconds: 1), () {
+            if (mounted) {
+              Navigator.of(context).pop();
+            }
+          });
+        }
+      } else {
+        _showAlert('错误', '注册失败，请重试');
+      }
+    } catch (e) {
       _showAlert('错误', '网络请求失败：$e');
     }
   }
